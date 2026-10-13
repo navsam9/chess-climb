@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get Chess Climb</title>
+<meta name="description" content="Chess Climb is an endless feed of chess puzzles that adapts to you. Free on iPhone, and in testing on Android.">
+<meta property="og:title" content="Chess Climb: Tactics Trainer">
+<meta property="og:description" content="An endless feed of chess puzzles that adapts to you. Free on iPhone, and in testing on Android.">
+<meta property="og:image" content="https://navsam9.github.io/chess-climb/logo.png">
+<meta property="og:url" content="https://navsam9.github.io/chess-climb/get/">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111418" media="(prefers-color-scheme: dark)">
+<script>
+  // iPhones and iPads go straight to the App Store. Android gets its steps first, plus a note
+  // to open the page in Chrome when it is inside another app, where Google sign-in often fails.
+  (function () {
+    var ua = navigator.userAgent;
+    var ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+    var android = /Android/.test(ua);
+    var root = document.documentElement;
+    root.setAttribute("data-platform", ios ? "ios" : android ? "android" : "other");
+    if (android && /; wv\)|FBAN|FBAV|FB_IAB|Instagram|musical_ly|TikTok|Bytedance|Snapchat|LinkedInApp|Line\//.test(ua)) {
+      root.setAttribute("data-inapp", "");
+    }
+    if (ios) location.replace("https://apps.apple.com/app/id6815836856");
+  })();
+</script>
+<link rel="stylesheet" href="../style.css">
+<style>
+  .choices { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }
+  [data-platform="android"] .ios { order: 2; }
+  .option h2 { margin: 0 0 4px; }
+  .badge { display: inline-block; margin-top: 6px; }
+  .badge img { display: block; height: 56px; width: auto; }
+  .steps { list-style: none; counter-reset: step; margin: 14px 0 12px; padding: 0; }
+  .steps li { counter-increment: step; position: relative; padding-left: 40px; margin-bottom: 18px; }
+  .steps li::before { content: counter(step); position: absolute; left: 0; top: 0; width: 28px; height: 28px;
+                      border-radius: 50%; background: #1f6fd1; color: #fff; font-weight: 600;
+                      font-size: 15px; line-height: 28px; text-align: center; }
+  .btn { display: block; margin-top: 10px; padding: 13px 18px; border-radius: 12px; background: #1f6fd1;
+         color: #fff; font-weight: 600; text-align: center; text-decoration: none; }
+  .notice { display: none; border: 1.5px solid var(--accent); border-radius: 12px; padding: 12px 14px;
+            margin: 12px 0 4px; font-size: 15px; }
+  [data-inapp] .notice { display: block; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="../logo.png" alt="Chess Climb app icon">
+    <div>
+      <h1>Chess Climb</h1>
+      <p>Tactics Trainer</p>
+    </div>
+  </header>
+
+  <p>An endless feed of chess puzzles that adapts to you. Free, with no ads and no account, and it works offline.</p>
+
+  <div class="choices">
+    <section class="option card ios">
+      <h2>iPhone</h2>
+      <p>Free on the App Store.</p>
+      <a class="badge" href="https://apps.apple.com/app/id6815836856">
+        <picture>
+          <source srcset="app-store-badge-white.svg" media="(prefers-color-scheme: dark)">
+          <img src="app-store-badge-black.svg" alt="Download on the App Store" width="168" height="56">
+        </picture>
+      </a>
+    </section>
+
+    <section class="option card android">
+      <h2>Android</h2>
+      <p>Chess Climb for Android is in testing on Google Play. Joining takes two steps.</p>
+      <p class="notice">Open this page in Chrome first: use this app's menu (⋮ or ⋯) to open it in your browser. Signing in to Google often fails inside other apps.</p>
+      <ol class="steps">
+        <li><strong>Join the testers group</strong>, using the Google account on your phone.
+          <a class="btn" href="https://groups.google.com/g/chess-climb-testers">Join the group</a></li>
+        <li><strong>Become a tester</strong>, then install Chess Climb from Google Play.
+          <a class="btn" href="https://play.google.com/apps/testing/com.navidsamiei.chessclimb">Become a tester</a></li>
+      </ol>
+      <p class="muted">If step 2 says the app isn't available, wait a few minutes after joining the group and try again. Please keep the app for at least 14 days: Google needs 12 testers for two weeks before it can go public.</p>
+      <p class="muted" style="margin: 0">Already a tester? <a href="https://play.google.com/store/apps/details?id=com.navidsamiei.chessclimb">Install from Google Play</a>.</p>
+    </section>
+  </div>
+
+  <nav><a href="../">Support</a> · <a href="../privacy.html">Privacy policy</a></nav>
+</main>
+</body>
+</html>
