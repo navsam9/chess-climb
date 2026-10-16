@@ -12,24 +12,33 @@
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#111418" media="(prefers-color-scheme: dark)">
 <script>
-  // iPhones and iPads go straight to the App Store. Android gets its steps first, plus a note
-  // to open the page in Chrome when it is inside another app, where Google sign-in often fails.
+  // iPhones and iPads go straight to the App Store. Android gets its steps first. Inside another
+  // app's browser (TikTok, Instagram...) neither jumps anywhere: both get a note to open the page in
+  // their own browser. TikTok won't open the App Store from a creator's link at all ("Action can't
+  // be completed"), and Google sign-in often fails in these browsers. On an iPhone, Safari, Chrome,
+  // Firefox and Edge all name Safari in their user agent; app browsers don't. The jump waits for the
+  // page itself, so a browser that blocks it still shows the page rather than a blank screen.
   (function () {
     var ua = navigator.userAgent;
     var ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
     var android = /Android/.test(ua);
+    var inApp = /FBAN|FBAV|FB_IAB|Instagram|musical_ly|TikTok|Bytedance|Snapchat|LinkedInApp|Line\//.test(ua) ||
+                (android && /; wv\)/.test(ua)) || (ios && !/Safari\//.test(ua));
     var root = document.documentElement;
     root.setAttribute("data-platform", ios ? "ios" : android ? "android" : "other");
-    if (android && /; wv\)|FBAN|FBAV|FB_IAB|Instagram|musical_ly|TikTok|Bytedance|Snapchat|LinkedInApp|Line\//.test(ua)) {
-      root.setAttribute("data-inapp", "");
+    if (inApp) root.setAttribute("data-inapp", "");
+    if (ios && !inApp) {
+      document.addEventListener("DOMContentLoaded", function () {
+        location.replace("https://apps.apple.com/app/id6815836856");
+      });
     }
-    if (ios) location.replace("https://apps.apple.com/app/id6815836856");
   })();
 </script>
 <link rel="stylesheet" href="../style.css">
 <style>
   .choices { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }
   [data-platform="android"] .ios { order: 2; }
+  [data-platform="ios"] .android { display: none; }
   .option h2 { margin: 0 0 4px; }
   .badge { display: inline-block; margin-top: 6px; }
   .badge img { display: block; height: 56px; width: auto; }
@@ -42,7 +51,8 @@
          color: #fff; font-weight: 600; text-align: center; text-decoration: none; }
   .notice { display: none; border: 1.5px solid var(--accent); border-radius: 12px; padding: 12px 14px;
             margin: 12px 0 4px; font-size: 15px; }
-  [data-inapp] .notice { display: block; }
+  [data-inapp][data-platform="android"] .android .notice,
+  [data-inapp][data-platform="ios"] .ios .notice { display: block; }
 </style>
 </head>
 <body>
@@ -61,6 +71,7 @@
     <section class="option card ios">
       <h2>iPhone</h2>
       <p>Free on the App Store.</p>
+      <p class="notice">Open this page in Safari first: tap ⋯ at the top right, then Open in browser. TikTok and some other apps won't open the App Store.</p>
       <a class="badge" href="https://apps.apple.com/app/id6815836856">
         <picture>
           <source srcset="app-store-badge-white.svg" media="(prefers-color-scheme: dark)">
