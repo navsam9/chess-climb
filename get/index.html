@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Get Chess Climb</title>
-<meta name="description" content="Chess Climb is an endless feed of chess puzzles that adapts to you. Free on iPhone, and in testing on Android.">
+<meta name="description" content="Chess Climb is an endless feed of chess puzzles that adapts to you. Free on iPhone and Android.">
 <meta property="og:title" content="Chess Climb: Tactics Trainer">
-<meta property="og:description" content="An endless feed of chess puzzles that adapts to you. Free on iPhone, and in testing on Android.">
+<meta property="og:description" content="An endless feed of chess puzzles that adapts to you. Free on iPhone and Android.">
 <meta property="og:image" content="https://navsam9.github.io/chess-climb/logo.png">
 <meta property="og:url" content="https://navsam9.github.io/chess-climb/get/">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#111418" media="(prefers-color-scheme: dark)">
 <script>
-  // iPhones and iPads go straight to the App Store. Android gets its steps first. Inside another
+  // iPhones and iPads go straight to the App Store. Android shows its card first. Inside another
   // app's browser (TikTok, Instagram...) neither jumps anywhere: both get a note to open the page in
   // their own browser. TikTok won't open the App Store from a creator's link at all ("Action can't
   // be completed"), and Google sign-in often fails in these browsers. On an iPhone, Safari, Chrome,
@@ -42,13 +42,10 @@
   .option h2 { margin: 0 0 4px; }
   .badge { display: inline-block; margin-top: 6px; }
   .badge img { display: block; height: 56px; width: auto; }
-  .steps { list-style: none; counter-reset: step; margin: 14px 0 12px; padding: 0; }
-  .steps li { counter-increment: step; position: relative; padding-left: 40px; margin-bottom: 18px; }
-  .steps li::before { content: counter(step); position: absolute; left: 0; top: 0; width: 28px; height: 28px;
-                      border-radius: 50%; background: #1f6fd1; color: #fff; font-weight: 600;
-                      font-size: 15px; line-height: 28px; text-align: center; }
-  .btn { display: block; margin-top: 10px; padding: 13px 18px; border-radius: 12px; background: #1f6fd1;
-         color: #fff; font-weight: 600; text-align: center; text-decoration: none; }
+  /* Google's badge image carries its clear space, a quarter of the badge's height, on every side.
+     At 84 px the badge itself is 56 px tall, as Google asks: no smaller than the App Store's. */
+  .badge.play { margin: -8px 0 -14px -14px; }
+  .badge.play img { height: 84px; }
   .notice { display: none; border: 1.5px solid var(--accent); border-radius: 12px; padding: 12px 14px;
             margin: 12px 0 4px; font-size: 15px; }
   [data-inapp][data-platform="android"] .android .notice,
@@ -82,17 +79,11 @@
 
     <section class="option card android">
       <h2>Android</h2>
-      <p>Chess Climb for Android is in testing on Google Play. Getting it takes three steps.</p>
+      <p>Free on Google Play.</p>
       <p class="notice">Open this page in Chrome first: use this app's menu (⋮ or ⋯) to open it in your browser. Signing in to Google often fails inside other apps.</p>
-      <ol class="steps">
-        <li><strong>Join the testers group</strong>, using the Google account on your phone.
-          <a class="btn" target="_blank" rel="noopener" href="https://groups.google.com/g/chess-climb-testers">Join the group</a></li>
-        <li><strong>Become a tester</strong>, then come back to this page.
-          <a class="btn" target="_blank" rel="noopener" href="https://play.google.com/apps/testing/com.navidsamiei.chessclimb">Become a tester</a></li>
-        <li><strong>Install from Google Play</strong> with this button.
-          <a class="btn" target="_blank" rel="noopener" href="https://play.google.com/store/apps/details?id=com.navidsamiei.chessclimb">Install from Google Play</a></li>
-      </ol>
-      <p class="muted" style="margin: 0">If step 2 says the app isn't available, wait a few minutes after joining the group and try again. Please keep the app for at least 14 days: Google needs 12 testers for two weeks before it can go public.</p>
+      <a class="badge play" href="https://play.google.com/store/apps/details?id=com.navidsamiei.chessclimb">
+        <img src="google-play-badge.png" alt="Get it on Google Play" width="217" height="84">
+      </a>
     </section>
   </div>
 
