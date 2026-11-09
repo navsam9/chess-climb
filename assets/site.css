@@ -1,0 +1,295 @@
+/* The home page: Today's climb in the app's own dark look (its Palette, the brown board), then the store badges. */
+
+:root {
+  color-scheme: dark;
+  --bg: #161512;
+  --surface: #262421;
+  --raised: #33302c;
+  --secondary: #9a9791;
+  --correct: #629924;
+  --wrong: #cc3333;
+  --warning: #d59120;
+  --accent: #62993b;
+  --text: #ffffff;
+  --text-soft: rgba(255, 255, 255, 0.85);
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rounded: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* Everything on screen but the board: the top bar, the puzzle's header, the row under the board and the buttons.
+     The board takes the rest, the full width on a phone, and never changes size as the climb goes on. */
+  --chrome: 266px;
+  --board: min(100vw, 560px, max(300px, calc(100vh - var(--chrome))));
+}
+
+@supports (height: 100svh) {
+  :root { --board: min(100vw, 560px, max(300px, calc(100svh - var(--chrome)))); }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  overflow-x: hidden;    /* the dimmed band reaches the window's edges, never past them */
+  overflow-x: clip;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.45 var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+button:disabled { cursor: default; }
+a { -webkit-tap-highlight-color: transparent; }
+svg { display: block; }
+
+.page { width: var(--board); max-width: 100%; margin: 0 auto; }
+
+/* The top bar */
+
+.top { display: flex; align-items: center; gap: 8px; height: 52px; padding: 0 16px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+.brand img { width: 30px; height: 30px; border-radius: 7px; }
+.top .spacer { flex: 1; }
+.circle-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text-soft);
+  display: grid;
+  place-items: center;
+}
+.circle-button svg { width: 18px; height: 18px; }
+.pill-link {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--text-soft);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* The climb */
+
+.climb { position: relative; }
+
+.puzzle-header { display: flex; height: 56px; margin: 4px 16px 10px; }
+.puzzle-header > * { flex: 1; min-width: 0; }
+
+.prompt { display: flex; align-items: center; gap: 10px; }
+.side-dot { flex: none; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5); }
+.prompt-title { font-size: 17px; font-weight: 600; line-height: 1.25; }
+.prompt-detail { font-size: 15px; line-height: 1.3; color: var(--secondary); }
+
+.banner { display: flex; align-items: center; gap: 12px; padding: 0 14px; border-radius: 14px; animation: banner-in 250ms ease-out; }
+.banner.solved { background: rgba(98, 153, 36, 0.18); }
+.banner.hinted { background: rgba(213, 145, 32, 0.18); }
+.banner.missed, .banner.gaveUp { background: rgba(204, 51, 51, 0.18); }
+.banner-icon { flex: none; width: 30px; height: 30px; }
+.banner-icon svg { width: 100%; height: 100%; }
+.banner.solved .banner-icon { color: var(--correct); }
+.banner.hinted .banner-icon { color: var(--warning); }
+.banner.missed .banner-icon, .banner.gaveUp .banner-icon { color: var(--wrong); }
+.banner-title { font-size: 20px; font-weight: 700; line-height: 1.2; }
+.banner-detail { font-size: 12px; font-weight: 500; color: var(--secondary); font-variant-numeric: tabular-nums; }
+@keyframes banner-in { from { opacity: 0; transform: scale(0.9); } }
+
+.share-banner { display: flex; align-items: center; gap: 12px; padding: 0 14px; border-radius: 14px; background: var(--surface); }
+.share-score { flex: 1; min-width: 0; }
+.share-line { margin-bottom: 5px; font-size: 12px; font-weight: 600; color: var(--secondary); white-space: nowrap; }
+.capsule { flex: none; height: 32px; padding: 0 14px; border-radius: 16px; background: var(--raised); color: var(--text-soft); font-size: 15px; font-weight: 600; }
+
+/* The board: its squares on a canvas, the pieces over it, then the arrows and marks */
+
+.board {
+  position: relative;
+  width: 100%;              /* the page's width, which a computer's scrollbar can make less than --board */
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+.board.live { touch-action: none; cursor: pointer; }
+.board canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.pieces { position: absolute; inset: 0; z-index: 1; }
+.piece { position: absolute; left: 0; top: 0; transform-origin: 50% 100%; pointer-events: none; -webkit-user-drag: none; }
+.piece.lifted { z-index: 3; }
+.overlay { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; pointer-events: none; }
+.overlay .mark {
+  transform-box: fill-box;
+  transform-origin: center;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+  animation: pop 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes pop { from { opacity: 0; transform: scale(0.2); } }
+.promotion { position: absolute; inset: 0; z-index: 4; background: rgba(0, 0, 0, 0.4); }
+.promotion[hidden] { display: none; }
+.promotion button { position: absolute; padding: 0.75%; }
+.promotion button::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.92); }
+.promotion img { position: relative; display: block; width: 100%; height: 100%; }
+
+/* Under the board, one height whatever it shows: the climb's row, a result's themes, or a miss's ‹ › */
+
+.under { height: 84px; padding: 10px 16px 0; overflow: hidden; }
+.climb-row { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; color: var(--text-soft); white-space: nowrap; }
+.climb-row svg { width: 17px; height: 17px; }
+.climb-row .capsule-static { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; border-radius: 17px; background: var(--surface); }
+.climb-row .capsule-static svg { color: var(--accent); }
+.climb-row b { font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.climb-row .spacer { flex: 1; }
+.clock { color: var(--secondary); font-variant-numeric: tabular-nums; }
+.rating { display: inline-flex; align-items: center; gap: 5px; font-variant-numeric: tabular-nums; }
+.rating svg { color: var(--secondary); }
+
+.steps { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; }
+.step { flex: none; display: grid; place-items: center; width: 36px; height: 28px; border-radius: 14px; background: var(--surface); }
+.step svg { width: 14px; height: 14px; }
+.step:disabled { opacity: 0.4; }
+.step-label { padding-left: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.step-label.wrong { color: var(--wrong); }
+.step-label.plain { color: var(--secondary); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; max-height: 64px; overflow: hidden; }
+.chips.one-row { flex-wrap: nowrap; margin-top: 10px; overflow-x: auto; scrollbar-width: none; }
+.chips.one-row::-webkit-scrollbar { display: none; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 29px;
+  padding: 0 10px;
+  border-radius: 15px;
+  background: var(--raised);
+  color: var(--text-soft);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* The buttons */
+
+.controls { display: flex; gap: 10px; padding: 0 16px 14px; }
+.control {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--surface);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.control-title { display: inline-flex; align-items: center; gap: 6px; }
+.control svg { width: 18px; height: 18px; }
+.control-detail { font-size: 11px; font-weight: 600; }
+.control:disabled { opacity: 0.5; }
+.control.armed { color: #fff; }
+.control.armed.warning { background: var(--warning); }
+.control.armed.wrong { background: var(--wrong); }
+.control.prominent { background: var(--accent); color: #fff; }
+
+/* The card over the board: the climb's start, and its score at the end */
+
+.board-card { position: absolute; inset: 0; z-index: 10; animation: fade-in 250ms ease-out; }
+.board-card[hidden] { display: none; }
+/* The climb dims under the card the full width of the window, as the app's feed does; the top bar and the store
+   badges below stay as they are, so they still work. */
+.board-card::before { content: ""; position: absolute; top: 0; bottom: 0; left: calc(50% - 50vw); right: calc(50% - 50vw); background: rgba(0, 0, 0, 0.55); }
+@keyframes fade-in { from { opacity: 0; } }
+.card-panel {
+  position: absolute;
+  left: 30px;
+  right: 30px;
+  top: calc(70px + var(--board-px, var(--board)) / 2);    /* centred on the board, under the header's 70 px */
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 22px;
+  background: var(--surface);
+  text-align: center;
+}
+.card-title { margin: 0; font: 700 32px/1.15 var(--rounded); }
+.card-day, .card-small { margin: 0; font-size: 15px; font-weight: 600; color: var(--secondary); }
+.card-text { margin: 4px 0 0; font-size: 13px; line-height: 1.4; color: var(--secondary); }
+.card-progress { margin: 0; font-size: 15px; font-weight: 600; color: var(--accent); }
+.card-score { margin: 0; font: 700 40px/1.1 var(--rounded); font-variant-numeric: tabular-nums; }
+.card-note { margin: 0; font-size: 13px; color: var(--secondary); }
+.card-button {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 44px;
+  margin-top: 8px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.card-button.secondary { margin-top: 0; background: var(--raised); color: var(--text-soft); }
+.card-button:disabled { opacity: 0.6; }
+.card-link { height: 32px; font-size: 15px; font-weight: 600; color: var(--secondary); }
+
+/* The ten squares: green for each solve, a red cross for the fall, grey for the rest */
+
+.rungs { display: flex; gap: calc(var(--rung) / 4); }
+.rung {
+  display: grid;
+  place-items: center;
+  width: var(--rung);
+  height: var(--rung);
+  border-radius: calc(var(--rung) * 0.19);
+  background: var(--raised);
+  color: #fff;
+  font-size: calc(var(--rung) * 0.85);
+  font-weight: 800;
+  line-height: 1;
+}
+.rung.solved { background: var(--correct); }
+.rung.fall { background: var(--wrong); }
+
+/* Get the app: the visitor's own store, both on a computer */
+
+.get { padding: 36px 16px 4px; }
+.get h2 { margin: 0 0 8px; font-size: 22px; line-height: 1.25; }
+.get p { margin: 0 0 12px; color: var(--text-soft); }
+.badges { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 18px; }
+.badge img { display: block; width: auto; height: 56px; }
+/* Google's badge image carries its clear space, a quarter of its height, on every side: at 84 px the badge is 56. */
+.badge.play { margin: -14px; }
+.badge.play img { height: 84px; }
+[data-platform="ios"] .badge.play,
+[data-platform="android"] .badge.app-store { display: none; }
+.notice { display: none; padding: 12px 14px; border: 1.5px solid var(--accent); border-radius: 12px; font-size: 15px; }
+[data-inapp][data-platform="ios"] .notice.ios,
+[data-inapp][data-platform="android"] .notice.android { display: block; }
+
+footer { padding: 36px 16px 48px; color: var(--secondary); font-size: 13px; }
+footer nav { margin-bottom: 12px; font-size: 15px; }
+footer a { color: var(--text-soft); }
+footer p { margin: 0 0 6px; }
+
+noscript p { margin: 16px; color: var(--text-soft); }

@@ -2,71 +2,88 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chess Climb Support</title>
-<meta name="description" content="Help and contact for Chess Climb, an endless chess puzzle feed that adapts to you.">
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Today's climb · Chess Climb</title>
+<meta name="description" content="Ten chess puzzles, each harder than the last, from 600 to 2400. One miss ends the climb. A new climb every day, the same for everyone.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Chess Climb">
+<meta property="og:title" content="Today's climb · Chess Climb">
+<meta property="og:description" content="Ten chess puzzles, each harder than the last. One miss ends the climb. Everyone gets the same ten today.">
+<meta property="og:url" content="https://playchessclimb.com/">
+<meta property="og:image" content="https://playchessclimb.com/assets/share-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#161512">
+<link rel="canonical" href="https://playchessclimb.com/">
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<script>
+  // Which store to offer, as on the get page: an iPhone gets the App Store, Android Google Play, a computer both.
+  // Inside another app's browser (TikTok, Instagram...) neither store opens, so the badges come with a note to open
+  // the page in Safari or Chrome. On an iPhone, Safari, Chrome, Firefox and Edge all name Safari in their user
+  // agent; app browsers don't.
+  (function () {
+    var ua = navigator.userAgent;
+    var ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+    var android = /Android/.test(ua);
+    var inApp = /FBAN|FBAV|FB_IAB|Instagram|musical_ly|TikTok|Bytedance|Snapchat|LinkedInApp|Line\//.test(ua) ||
+                (android && /; wv\)/.test(ua)) || (ios && !/Safari\//.test(ua));
+    var root = document.documentElement;
+    root.setAttribute("data-platform", ios ? "ios" : android ? "android" : "other");
+    if (inApp) root.setAttribute("data-inapp", "");
+  })();
+</script>
+<link rel="stylesheet" href="assets/site.css">
+<link rel="modulepreload" href="assets/rules.js">
+<script type="module" src="assets/climb.js"></script>
 </head>
 <body>
-<main>
-  <header>
-    <img src="logo.png" alt="Chess Climb app icon">
-    <div>
-      <h1>Chess Climb</h1>
-      <p>Tactics Trainer</p>
-    </div>
+<div class="page">
+  <header class="top">
+    <a class="brand" href="./"><img src="logo.png" alt="" width="30" height="30">Chess Climb</a>
+    <span class="spacer"></span>
+    <button type="button" class="circle-button" id="sound" aria-label="Sound"></button>
+    <a class="pill-link" href="#get" data-store>Get the app</a>
   </header>
 
-  <p>Chess Climb is an endless feed of chess puzzles that adapts to you. Solve a puzzle, see how you did, and the next one appears. The app learns which themes you miss, follows each miss with an easier puzzle on the same theme, and brings the puzzles you missed back later.</p>
+  <main>
+    <section class="climb" id="climb" aria-label="Today's climb">
+      <div class="puzzle-header" id="puzzle-header"></div>
+      <div class="board" id="board">
+        <canvas aria-hidden="true"></canvas>
+        <div class="pieces"></div>
+        <svg class="overlay" aria-hidden="true"></svg>
+        <div class="promotion" hidden></div>
+      </div>
+      <div class="under" id="under"></div>
+      <div class="controls" id="controls"></div>
+      <div class="board-card" id="board-card" hidden></div>
+    </section>
+    <noscript><p>Today's climb needs JavaScript. Turn it on, or get the app below.</p></noscript>
 
-  <div class="card">
-    <strong>Contact</strong>
-    <p style="margin: 4px 0 0">Questions, bug reports or ideas: <a href="mailto:sammychess10@gmail.com">sammychess10@gmail.com</a></p>
-  </div>
+    <section class="get" id="get">
+      <h2>More puzzles in the app</h2>
+      <p>An endless feed of chess puzzles that adapts to you. It learns the themes you miss and brings your misses back later. Free, with no ads and no account, and it works offline.</p>
+      <p class="notice ios">Open this page in Safari first: tap ⋯ at the top right, then Open in browser. TikTok and some other apps won't open the App Store.</p>
+      <p class="notice android">Open this page in Chrome first: use this app's menu (⋮ or ⋯) to open it in your browser. Signing in to Google often fails inside other apps.</p>
+      <div class="badges">
+        <a class="badge app-store" href="https://apps.apple.com/app/id6815836856">
+          <img src="get/app-store-badge-white.svg" alt="Download on the App Store" width="168" height="56">
+        </a>
+        <a class="badge play" href="https://play.google.com/store/apps/details?id=com.navidsamiei.chessclimb">
+          <img src="get/google-play-badge.png" alt="Get it on Google Play" width="217" height="84">
+        </a>
+      </div>
+    </section>
+  </main>
 
-  <h2>Questions</h2>
-
-  <h3>How is my rating calculated?</h3>
-  <p>Chess Climb uses Glicko-2, the same rating system Lichess uses for puzzles. Solving a puzzle raises your rating and missing one lowers it. How much depends on how hard the puzzle is. A new rating moves quickly and shows a ? until it settles, so a rough starting guess is fine.</p>
-
-  <h3>Does solving speed affect my rating?</h3>
-  <p>No. Your rating counts only solves and misses. Your speed helps the app decide how hard your next puzzles should be.</p>
-
-  <h3>Why did a hint lower my rating?</h3>
-  <p>Using a hint counts as a miss. The Hint button asks you to tap twice, so you can't use one by accident.</p>
-
-  <h3>Can I skip a puzzle?</h3>
-  <p>No. If you're stuck, tap Give up to see the solution. It counts as a miss.</p>
-
-  <h3>Can I go back to an earlier puzzle?</h3>
-  <p>Yes. Tap Back to see earlier puzzles, including the one you just finished, and step through their solutions.</p>
-
-  <h3>Can I check a puzzle with an engine?</h3>
-  <p>Yes. After a puzzle, tap Engine. Arasan runs on your phone and shows its evaluation and best line below the board. You can also play your own moves on the board and step back and forth through them. Tap Engine again to turn it off; it also turns off when you move on.</p>
-
-  <h3>What do the themes mean?</h3>
-  <p>Tap a theme under a finished puzzle, or the ⓘ next to it in Progress, for a short explanation.</p>
-
-  <h3>Can I change the board and pieces?</h3>
-  <p>Yes. Settings has 9 board colors and 9 piece sets, and a clock while solving that you can turn off.</p>
-
-  <h3>Will I see puzzles I missed again?</h3>
-  <p>Yes. A missed puzzle comes back once, at least 12 hours later. If you miss it again, it returns once more a few days later. Reviews don't change your rating, since you've already seen the answer.</p>
-
-  <h3>Do I need an internet connection?</h3>
-  <p>No. The puzzles and the engine are all on your phone, so everything works offline.</p>
-
-  <h3>How do I start over?</h3>
-  <p>In Settings, tap Reset all progress. This deletes your rating, history and review schedule.</p>
-
-  <h3>Where do the puzzles come from?</h3>
-  <p>From the <a href="https://database.lichess.org/#puzzles">Lichess open puzzle database</a>, which anyone may use freely (CC0). Chess Climb is not affiliated with or endorsed by Lichess.</p>
-
-  <h2>Privacy</h2>
-  <p>Chess Climb doesn't collect any data about you. Read the <a href="privacy.html">privacy policy</a>.</p>
-
-  <h2>Credits</h2>
-  <p class="muted">Puzzles: Lichess open database (CC0). Engine: Arasan 26 by Jon Dart (MIT). Chess pieces: Colin M.L. Burnett (BSD); Alexis Luengas (Apache 2.0); Maurizio Monge (MIT); RhosGFX (CC0); Kosal Sen, Nikolay Anzarov and James Faure (CC BY 4.0).</p>
-</main>
+  <footer>
+    <nav><a href="support/">Support</a> · <a href="privacy.html">Privacy policy</a></nav>
+    <p>Questions, bug reports or ideas: <a href="mailto:sammychess10@gmail.com">sammychess10@gmail.com</a></p>
+    <p>Puzzles from the Lichess open database (CC0). Chess Climb is not affiliated with Lichess.</p>
+    <p>Chess pieces by Colin M.L. Burnett (BSD).</p>
+  </footer>
+</div>
 </body>
 </html>
