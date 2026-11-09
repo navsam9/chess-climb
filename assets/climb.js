@@ -1039,7 +1039,9 @@ class Climb {
       }, T.endCard);
     }
     if (card.study) {
-      await this.playSolution(card);
+      // A miss ends the climb, and its solution waits for the end card's "See the solution": played at once, it ran on
+      // under the card (the owner, 2026-11-09).
+      card.solutionWaits = true;
     } else if (!this.progress.ended) {
       await sleep(T.advance);
       if (this.card === card) this.present(card.index + 1);
@@ -1047,7 +1049,8 @@ class Climb {
   }
 
   async playSolution(card) {
-    const line = card.session.remainingLine();
+    // A climb that ended on an earlier visit has no session: its line comes from the study.
+    const line = card.session?.remainingLine() ?? card.study.frames.slice(card.study.index + 1).map((frame) => frame.move);
     if (!line.length) return;
     card.arrows = [{ from: line[0].from, to: line[0].to }];
     this.view.set({ arrows: card.arrows });
@@ -1085,17 +1088,19 @@ class Climb {
     this.render();
   }
 
-  /** The climb ended on an earlier visit today: its last puzzle as it ended, under its card. */
+  /** The climb ended on an earlier visit today: its last puzzle as it ended, under its card. After a fall, "See the
+   *  solution" plays the solution, as it does when the climb has just ended. */
   showEnded() {
     const { solved, fell, result, wrong, missPly } = this.progress;
     const index = Math.min(solved, RUNGS - 1);
     const puzzle = this.ladder[index];
     const start = new BoardModel(Position.fromFen(puzzle.fen));
-    const card = { index, puzzle, phase: "result", marks: [], hint: -1, outcome: null, settled: true, stepped: true };
+    const card = { index, puzzle, phase: "result", marks: [], hint: -1, outcome: null, settled: true, stepped: false };
     if (fell && (result === "missed" || result === "gaveUp")) {
       card.study = new Study(puzzle, start, result, wrong ? parseUci(wrong) : null, missPly);
       if (!card.study.mistake && missPly) card.study.index = Math.max(0, Math.min(missPly - 1, card.study.frames.length - 1));
       card.outcome = { result, seconds: null };
+      card.solutionWaits = true;
     } else {
       // The summit, or a solve with a hint: the puzzle's last position.
       const study = new Study(puzzle, start, "solved", null, null);
@@ -1108,7 +1113,7 @@ class Climb {
       card.board = card.study.frame.board.clone();
       card.lastMove = card.study.frame.move;
     }
-    card.arrows = card.study?.arrows ?? [];
+    card.arrows = [];
     this.card = card;
     this.endStage = "card";
     this.view.show(card.board, 0);
@@ -1195,9 +1200,15 @@ class Climb {
     setTimeout(() => { button.textContent = original; }, 1600);
   }
 
+  /** "See the solution", "Close", Escape or a tap around the card. After a fall the solution plays now, where it can
+   *  be seen, unless ‹ › already stepped through it. */
   closeEndCard() {
     this.endStage = "closed";
     this.render();
+    const card = this.card;
+    if (!card?.solutionWaits) return;
+    card.solutionWaits = false;
+    if (!card.stepped) this.playSolution(card);
   }
 
   clicked(event) {
