@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["ST2MX9T7CH.com.navidsamiei.chessclimb"],
+        "components": [
+          { "/": "/", "comment": "Today's climb, the link a shared score carries; no other page opens the app" }
+        ]
+      }
+    ]
+  }
+}

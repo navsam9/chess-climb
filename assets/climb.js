@@ -9,6 +9,9 @@ const SITE = "https://playchessclimb.com";
 const RUNGS = 10;
 const APP_STORE = "https://apps.apple.com/app/id6815836856";
 const PLAY_STORE = "https://play.google.com/store/apps/details?id=com.navidsamiei.chessclimb";
+// The app on an Android phone that has it, on Today's climb's card; Google Play if it has gone since (findApp).
+const OPEN_APP = "intent://playchessclimb.com/#Intent;scheme=https;package=com.navidsamiei.chessclimb;"
+  + `S.browser_fallback_url=${encodeURIComponent(PLAY_STORE)};end`;
 const PROGRESS_KEY = "chessclimb.today";
 const SOUND_KEY = "chessclimb.sound";
 const START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -111,13 +114,33 @@ function rungsHTML(cleared, fell, size) {
 const root = document.documentElement;
 const platform = root.dataset.platform ?? "other";
 const inApp = root.hasAttribute("data-inapp");
+let hasApp = false;    // an Android phone with the app, once findApp has asked Chrome
 
-/** Straight to the visitor's store, or to the badges where a store can't open from here (TikTok's browser, a computer). */
+/** Straight to the visitor's store, or to the badges where a store can't open from here (TikTok's browser, a computer);
+ *  the app itself on an Android phone that has it. */
 function storeLink() {
+  if (hasApp) return OPEN_APP;
   if (inApp) return "#get";
   if (platform === "ios") return APP_STORE;
   if (platform === "android") return PLAY_STORE;
   return "#get";
+}
+
+/** What the store buttons say. */
+function storeLabel() {
+  return hasApp ? "Open the app" : "Get the app";
+}
+
+/** Whether Chrome on Android finds the app: the app names this site in its asset_statements (from 1.3.1), and
+ *  manifest.webmanifest names the app. An iPhone can't be asked; Safari's banner offers Open there (index.html). */
+async function findApp() {
+  if (platform !== "android" || inApp || !navigator.getInstalledRelatedApps) return false;
+  try {
+    const apps = await navigator.getInstalledRelatedApps();
+    return apps.some((app) => app.id === "com.navidsamiei.chessclimb");
+  } catch {
+    return false;
+  }
 }
 
 // MARK: Storage, a convenience: a private window or blocked storage only loses the day's progress
@@ -827,7 +850,18 @@ class Climb {
       this.sounds.toggle();
       showSound();
     });
-    for (const link of document.querySelectorAll("[data-store]")) link.href = storeLink();
+    const showStore = () => {
+      for (const link of document.querySelectorAll("[data-store]")) {
+        link.href = storeLink();
+        link.textContent = storeLabel();
+      }
+    };
+    showStore();
+    findApp().then((found) => {
+      if (!found) return;
+      hasApp = true;
+      showStore();
+    });
     this.section.addEventListener("click", (event) => this.clicked(event));
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && this.endStage === "card") this.closeEndCard();
@@ -1276,7 +1310,7 @@ class Climb {
   renderControls() {
     let html;
     if (this.status === "ended") {
-      html = `<a class="control prominent" href="${storeLink()}" data-store>Get the app</a>`;
+      html = `<a class="control prominent" href="${storeLink()}" data-store>${storeLabel()}</a>`;
     } else {
       const card = this.card;
       const solving = card?.phase === "solving";
@@ -1313,7 +1347,7 @@ class Climb {
       html = `<div class="card-panel" role="dialog" aria-label="Today's climb, ${solved} of ${RUNGS}"><p class="card-small">Today's climb · ${shortDate(day)}</p>`
         + `<p class="card-score">${solved} of ${RUNGS}</p>${rungsHTML(solved, fell, 22)}<p class="card-note">A new climb tomorrow.</p>`
         + `<button type="button" class="card-button" data-action="share">Share</button>`
-        + `<a class="card-button secondary" href="${storeLink()}" data-store>Get the app</a>`
+        + `<a class="card-button secondary" href="${storeLink()}" data-store>${storeLabel()}</a>`
         + `<button type="button" class="card-link" data-action="close">Close</button></div>`;
     }
     const shown = html !== "";
