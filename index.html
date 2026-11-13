@@ -21,6 +21,41 @@
 <!-- Lists the Android app, so Chrome can tell a visitor who has it (assets/climb.js, findApp). -->
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="canonical" href="https://playchessclimb.com/">
+<!-- What search engines and AI assistants read about the site and the app; visitors don't see it. It names no ratings:
+     Google doesn't accept a store's ratings here. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://playchessclimb.com/#website",
+      "url": "https://playchessclimb.com/",
+      "name": "Chess Climb",
+      "description": "Today's climb: ten chess puzzles, each harder than the last, from 600 to 2400. One miss ends the climb. A new climb every day, the same for everyone.",
+      "about": { "@id": "https://playchessclimb.com/#app" }
+    },
+    {
+      "@type": "MobileApplication",
+      "@id": "https://playchessclimb.com/#app",
+      "name": "Chess Climb: Tactics Trainer",
+      "alternateName": "Chess Climb",
+      "url": "https://playchessclimb.com/",
+      "image": "https://playchessclimb.com/logo.png",
+      "description": "A chess tactics trainer: an endless feed of chess puzzles that adapts to you. Each puzzle is matched to your rating and aimed at the themes you most need to practice, every theme has a rating of its own, and missed puzzles come back for review. Today's climb and a chess engine are built in. Free, with no ads and no account, and it works offline.",
+      "applicationCategory": "GameApplication",
+      "applicationSubCategory": "Chess puzzles",
+      "operatingSystem": "iOS 18 or later, Android 8 or later",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "sameAs": [
+        "https://apps.apple.com/app/id6815836856",
+        "https://play.google.com/store/apps/details?id=com.navidsamiei.chessclimb"
+      ],
+      "author": { "@type": "Person", "name": "SammyChess", "url": "https://www.youtube.com/@SammyChess" }
+    }
+  ]
+}
+</script>
 <link rel="icon" type="image/png" href="logo.png">
 <link rel="apple-touch-icon" href="logo.png">
 <script>
@@ -65,11 +100,18 @@
       <div class="controls" id="controls"></div>
       <div class="board-card" id="board-card" hidden></div>
     </section>
-    <noscript><p>Today's climb needs JavaScript. Turn it on, or get the app below.</p></noscript>
+    <noscript><p>Today's climb is ten chess puzzles, each harder than the last, from 600 to 2400. One miss ends the climb, and everyone gets the same ten each day. It needs JavaScript: turn it on, or get the app below.</p></noscript>
 
     <section class="get" id="get">
       <h2>More puzzles in the app</h2>
-      <p>An endless feed of chess puzzles that adapts to you. It learns the themes you miss and brings your misses back later. Free, with no ads and no account, and it works offline.</p>
+      <p>Chess Climb is an endless feed of chess puzzles that adapts to you. Today's climb is in it too.</p>
+      <ul class="points">
+        <li><b>Puzzles at your level.</b> Each one is matched to your rating and aimed at the themes you most need to practice.</li>
+        <li><b>Misses come back.</b> Miss a puzzle and a similar one comes a few puzzles later. The one you missed returns after 12 hours.</li>
+        <li><b>A rating for every theme.</b> Forks, pins, back-rank mates, endgames and dozens more, each explained in plain English.</li>
+        <li><b>An engine to check your ideas.</b> After a puzzle, see the best line or try your own moves.</li>
+        <li><b>Free, with no ads and no account.</b> A million puzzles on your phone, so it works offline.</li>
+      </ul>
       <p class="notice ios">Open this page in Safari first: tap ⋯ at the top right, then Open in browser. TikTok and some other apps won't open the App Store.</p>
       <p class="notice android">Open this page in Chrome first: use this app's menu (⋮ or ⋯) to open it in your browser. Signing in to Google often fails inside other apps.</p>
       <div class="badges">

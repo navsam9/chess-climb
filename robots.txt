@@ -1,0 +1,5 @@
+# Every crawler may read the whole site, search engines' and AI assistants' alike.
+User-agent: *
+Allow: /
+
+Sitemap: https://playchessclimb.com/sitemap.xml

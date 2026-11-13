@@ -276,6 +276,9 @@ svg { display: block; }
 .get { padding: 36px 16px 4px; }
 .get h2 { margin: 0 0 8px; font-size: 22px; line-height: 1.25; }
 .get p { margin: 0 0 12px; color: var(--text-soft); }
+.points { margin: 0 0 12px; padding: 0 0 0 20px; color: var(--text-soft); }
+.points li { margin: 0 0 8px; }
+.points b { color: var(--text); font-weight: 600; }
 .badges { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 18px; }
 .badge img { display: block; width: auto; height: 56px; }
 /* Google's badge image carries its clear space, a quarter of its height, on every side: at 84 px the badge is 56. */

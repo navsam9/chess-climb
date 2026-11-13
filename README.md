@@ -7,3 +7,4 @@ The Chess Climb website, published with GitHub Pages: Today's climb to play in t
 - Support: `support/index.html`
 - Privacy policy: `privacy.html`
 - Get the app: `get/index.html`, the one link for bios. iPhones go straight to the App Store, except inside app browsers such as TikTok's, which block it: there the page asks to be opened in Safari. Android shows Google's Get it on Google Play badge, and inside app browsers a note to open the page in Chrome.
+- Search engines and AI assistants: `robots.txt` lets every crawler read the whole site and points to `sitemap.xml`, which lists the four pages. `index.html` carries structured data (JSON-LD) describing the site and the app, and its app section and `noscript` note say in plain text what a crawler that doesn't run JavaScript would otherwise miss. `googlef9da424c3f1f9447.html` keeps the site verified in Google Search Console: don't remove it.
